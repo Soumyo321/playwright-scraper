@@ -1,10 +1,7 @@
 const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch({ 
-    headless: false,  // See browser open locally for debugging
-    slowMo: 1000      // Slow down actions to watch
-  });
+  const browser = await chromium.launch({ headless: true });  // ✅ HEADLESS = No screen needed
   let grandTotal = 0;
 
   const urls = [
@@ -24,22 +21,19 @@ const { chromium } = require('playwright');
     console.log(`Visiting: ${url}`);
     const page = await browser.newPage();
     
-    // Try multiple loading strategies
     try {
       await page.goto(url, { 
-        waitUntil: 'domcontentloaded',  // Load faster
-        timeout: 60000                   // 60 seconds patience
+        waitUntil: 'domcontentloaded',
+        timeout: 60000 
       });
       
-      // Wait extra for JS tables to render
-      await page.waitForTimeout(5000);
+      await page.waitForTimeout(5000);  // Wait for JS tables
       
-      // Find all table cells with numbers
       const numbers = await page.evaluate(() => {
         const nums = [];
         document.querySelectorAll('table td, table th').forEach(cell => {
           const text = cell.innerText.trim();
-          const num = parseFloat(text.replace(/[^\d.-]/g, ''));  // Extract numbers
+          const num = parseFloat(text.replace(/[^\d.-]/g, ''));
           if (!isNaN(num)) nums.push(num);
         });
         return nums;
