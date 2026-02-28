@@ -1,0 +1,24 @@
+name: Scrape Table Sums with Playwright
+
+on: [push]  # Runs on every push to any branch
+
+jobs:
+  scrape:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 23f2002819@ds.study.iitm.ac.in - Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Run scraper for 23f2002819@ds.study.iitm.ac.in
+        run: node scrape.js
